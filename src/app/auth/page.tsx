@@ -64,33 +64,26 @@ export default function AuthPage() {
 
   return (
     <div className="flex min-h-screen font-sans">
+      <div className="hidden lg:flex flex-col justify-between w-[46%] bg-slate-900 px-14 py-12 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-48 h-48 bg-blue-600 opacity-60 rounded-full translate-x-16 -translate-y-16" />
+        <div className="absolute bottom-24 left-0 w-32 h-32 bg-blue-600 opacity-10 -translate-x-10" />
+        <div className="absolute bottom-0 right-12 w-24 h-24 bg-blue-600 opacity-40 rotate-45 translate-y-8" />
 
-      {/* ── Left panel ── */}
-      <div className="hidden lg:flex flex-col justify-between w-[46%] bg-brand-navy px-14 py-12 relative overflow-hidden">
-
-        {/* Geometric background shapes */}
-        <div className="absolute top-0 right-0 w-48 h-48 bg-brand-blue opacity-20 rounded-full translate-x-16 -translate-y-16" />
-        <div className="absolute bottom-24 left-0 w-32 h-32 bg-brand-blue opacity-15 -translate-x-10" />
-        <div className="absolute bottom-0 right-12 w-24 h-24 bg-brand-blue opacity-10 rotate-45 translate-y-8" />
-
-        {/* Brand */}
         <div className="relative flex items-center gap-2">
-          <span className="text-brand-blue font-mono text-2xl font-medium leading-none">⌁</span>
+          <span className="text-blue-600 font-mono text-2xl font-medium leading-none">⌁</span>
           <span className="text-white font-mono text-sm font-medium tracking-widest uppercase">HireWire</span>
         </div>
 
-        {/* Headline */}
         <div className="relative">
-          <div className="w-8 h-0.5 bg-brand-blue mb-6" />
+          <div className="w-8 h-0.5 bg-blue-600 mb-6" />
           <h1 className="text-4xl font-semibold text-white leading-tight tracking-tight mb-4">
             Every application.<br />One command<br />center.
           </h1>
-          <p className="text-brand-muted text-sm leading-relaxed max-w-xs">
+          <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
             Track your job hunt, get automated reminders, and catch every reply — automatically.
           </p>
         </div>
 
-        {/* Feature list */}
         <ul className="relative space-y-4">
           {[
             { icon: "⌛", text: "Reminders at 3 days, 1 week, 2 weeks" },
@@ -98,44 +91,38 @@ export default function AuthPage() {
             { icon: "📁", text: "Custom workspace folders" },
           ].map(({ icon, text }) => (
             <li key={text} className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded bg-brand-blue/20 flex items-center justify-center text-sm flex-shrink-0">
+              <span className="w-8 h-8 rounded bg-blue-600/40 flex items-center justify-center text-sm flex-shrink-0">
                 {icon}
               </span>
-              <span className="text-brand-muted text-sm">{text}</span>
+              <span className="text-slate-400 text-sm">{text}</span>
             </li>
           ))}
           <li className="pt-2">
-            <span className="font-mono text-[10px] tracking-widest uppercase text-brand-blue/60">
+            <span className="font-mono text-[10px] tracking-widest uppercase text-blue-400/80">
               Free forever for job seekers
             </span>
           </li>
         </ul>
       </div>
 
-      {/* ── Right panel ── */}
-      <div className="flex-1 flex items-center justify-center bg-brand-light px-6 py-12">
+      <div className="flex-1 flex items-center justify-center bg-slate-50 px-6 py-12">
         <div className="w-full max-w-md">
-
-          {/* Logo (mobile only) */}
           <div className="flex items-center gap-2 mb-8 lg:hidden">
-            <span className="text-brand-blue font-mono text-xl">⌁</span>
-            <span className="font-mono text-sm font-medium tracking-widest uppercase text-brand-navy">HireWire</span>
+            <span className="text-blue-600 font-mono text-xl">⌁</span>
+            <span className="font-mono text-sm font-medium tracking-widest uppercase text-slate-900">HireWire</span>
           </div>
 
-          {/* Card */}
-          <div className="bg-white rounded-2xl shadow-sm border border-blue-100 p-8">
-
-            {/* Tabs */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
             {!isForgot && (
-              <div className="flex gap-1 bg-brand-light rounded-xl p-1 mb-7">
+              <div className="flex gap-1 bg-slate-100 rounded-xl p-1 mb-7">
                 {(["login", "signup"] as Mode[]).map((m) => (
                   <button
                     key={m}
                     onClick={() => { setMode(m); clearMessages(); }}
                     className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
                       mode === m
-                        ? "bg-brand-blue text-white shadow-sm"
-                        : "text-brand-muted hover:text-brand-navy"
+                        ? "bg-blue-600 text-white shadow-sm"
+                        : "text-slate-500 hover:text-slate-900"
                     }`}
                   >
                     {m === "login" ? "Sign in" : "Create account"}
@@ -146,34 +133,32 @@ export default function AuthPage() {
 
             {isForgot && (
               <div className="mb-6">
-                <h2 className="text-lg font-semibold text-brand-navy">Reset password</h2>
-                <p className="text-sm text-gray-400 mt-1">We'll send a reset link to your email.</p>
+                <h2 className="text-lg font-semibold text-slate-900">Reset password</h2>
+                <p className="text-sm text-slate-500 mt-1">We'll send a reset link to your email.</p>
               </div>
             )}
 
-            {/* Google */}
             {!isForgot && (
               <>
                 <button
                   onClick={handleGoogleAuth}
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-3 py-2.5 px-4 border border-blue-100 rounded-xl bg-white text-brand-navy text-sm font-medium hover:bg-brand-light hover:border-brand-blue/30 transition-all duration-150 disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-3 py-2.5 px-4 border border-slate-200 rounded-xl bg-white text-slate-900 text-sm font-medium hover:bg-slate-50 hover:border-blue-600/30 transition-all duration-150 disabled:opacity-50"
                 >
                   <GoogleIcon />
                   Continue with Google
                 </button>
                 <div className="flex items-center gap-3 my-5">
-                  <div className="flex-1 h-px bg-blue-100" />
-                  <span className="text-xs text-gray-300 font-mono">or</span>
-                  <div className="flex-1 h-px bg-blue-100" />
+                  <div className="flex-1 h-px bg-slate-200" />
+                  <span className="text-xs text-slate-400 font-mono">or</span>
+                  <div className="flex-1 h-px bg-slate-200" />
                 </div>
               </>
             )}
 
-            {/* Form */}
             <form onSubmit={handleEmailAuth} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5 tracking-wide uppercase">
+                <label className="block text-xs font-medium text-slate-500 mb-1.5 tracking-wide uppercase">
                   Email
                 </label>
                 <input
@@ -183,13 +168,13 @@ export default function AuthPage() {
                   placeholder="you@email.com"
                   required
                   autoComplete="email"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-blue-100 bg-brand-light text-brand-navy text-sm placeholder-gray-300 outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all duration-150"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-sm placeholder-slate-400 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 transition-all duration-150"
                 />
               </div>
 
               {!isForgot && (
                 <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5 tracking-wide uppercase">
+                  <label className="block text-xs font-medium text-slate-500 mb-1.5 tracking-wide uppercase">
                     Password
                   </label>
                   <input
@@ -200,7 +185,7 @@ export default function AuthPage() {
                     required
                     minLength={8}
                     autoComplete={isSignup ? "new-password" : "current-password"}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-blue-100 bg-brand-light text-brand-navy text-sm placeholder-gray-300 outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all duration-150"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-sm placeholder-slate-400 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 transition-all duration-150"
                   />
                 </div>
               )}
@@ -219,7 +204,7 @@ export default function AuthPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 bg-brand-blue text-white rounded-xl font-mono text-sm font-medium tracking-wide hover:bg-blue-700 active:scale-[0.99] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed mt-1"
+                className="w-full py-2.5 bg-blue-600 text-white rounded-xl font-mono text-sm font-medium tracking-wide hover:bg-blue-700 active:scale-[0.99] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed mt-1"
               >
                 {loading
                   ? "Please wait…"
@@ -231,12 +216,11 @@ export default function AuthPage() {
               </button>
             </form>
 
-            {/* Footer links */}
             <div className="mt-5 text-center">
               {!isForgot && isLogin && (
                 <button
                   onClick={() => { setMode("forgot"); clearMessages(); }}
-                  className="text-xs text-gray-400 underline underline-offset-2 hover:text-brand-blue transition-colors"
+                  className="text-xs text-slate-500 underline underline-offset-2 hover:text-blue-600 transition-colors"
                 >
                   Forgot password?
                 </button>
@@ -244,7 +228,7 @@ export default function AuthPage() {
               {isForgot && (
                 <button
                   onClick={() => { setMode("login"); clearMessages(); }}
-                  className="text-xs text-gray-400 underline underline-offset-2 hover:text-brand-blue transition-colors"
+                  className="text-xs text-slate-500 underline underline-offset-2 hover:text-blue-600 transition-colors"
                 >
                   ← Back to sign in
                 </button>

@@ -73,20 +73,20 @@ export default function DashboardShell({
   }
 
   return (
-    <div className="flex h-screen overflow-hidden font-sans bg-brand-light">
+    <div className="flex h-screen overflow-hidden font-sans bg-slate-50">
 
       {/* ── Sidebar ── */}
-      <aside className="w-56 flex-shrink-0 flex flex-col bg-brand-navy h-screen overflow-hidden border-r border-white/5">
+      <aside className="w-56 flex-shrink-0 flex flex-col bg-slate-900 h-screen overflow-hidden border-r border-white/5">
 
         {/* Brand */}
         <div className="flex items-center gap-2 px-5 py-5 border-b border-white/5">
-          <span className="text-brand-blue font-mono text-lg leading-none">⌁</span>
+          <span className="text-blue-400 font-mono text-lg leading-none">⌁</span>
           <span className="font-mono text-xs font-medium tracking-widest uppercase text-white">HireWire</span>
         </div>
 
         {/* Folders */}
         <div className="flex flex-col flex-1 overflow-hidden">
-          <p className="font-mono text-[9px] tracking-widest uppercase text-white/20 px-5 pt-5 pb-2">
+          <p className="font-mono text-[9px] tracking-widest uppercase text-white/40 px-5 pt-5 pb-2">
             Workspaces
           </p>
 
@@ -96,8 +96,8 @@ export default function DashboardShell({
               return (
                 <div
                   key={folder.id}
-                  className={`group flex items-center rounded-lg transition-colors ${
-                    isActive ? "bg-brand-blue/20" : "hover:bg-white/5"
+                  className={`group flex items-center justify-between rounded-lg transition-colors px-1 ${
+                    isActive ? "bg-blue-600/20" : "hover:bg-white/5"
                   }`}
                 >
                   {renamingId === folder.id ? (
@@ -110,33 +110,35 @@ export default function DashboardShell({
                         if (e.key === "Enter") renameFolder(folder.id);
                         if (e.key === "Escape") setRenamingId(null);
                       }}
-                      className="flex-1 mx-1 my-1 px-2 py-1 rounded-md bg-white/10 text-white text-xs outline-none border border-brand-blue/60 font-sans"
+                      className="flex-1 mx-1 my-1 px-2 py-1 rounded-md bg-white/10 text-white text-xs outline-none border border-blue-400/60 font-sans w-full"
                     />
                   ) : (
-                    <button
-                      onClick={() => router.push(`/dashboard/${folder.id}`)}
-                      className="flex-1 flex items-center gap-2 px-3 py-2 text-left min-w-0"
-                    >
-                      <span className={`text-[9px] flex-shrink-0 ${isActive ? "text-brand-blue" : "text-white/20"}`}>▸</span>
-                      <span className={`text-xs truncate ${isActive ? "text-white font-medium" : "text-white/50 group-hover:text-white/80"}`}>
-                        {folder.name}
-                      </span>
-                    </button>
-                  )}
+                    <>
+                      <button
+                        onClick={() => router.push(`/dashboard/${folder.id}`)}
+                        className="flex-1 flex items-center gap-2 px-2 py-2 text-left min-w-0"
+                      >
+                        <span className={`text-[9px] flex-shrink-0 ${isActive ? "text-blue-400" : "text-white/40"}`}>▸</span>
+                        <span className={`text-xs truncate ${isActive ? "text-white font-medium" : "text-white/60 group-hover:text-white/90"}`}>
+                          {folder.name}
+                        </span>
+                      </button>
 
-                  {/* Rename / delete */}
-                  <div className="flex gap-0.5 pr-1.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                    <button
-                      onClick={() => { setRenamingId(folder.id); setRenameValue(folder.name); }}
-                      className="p-1 rounded text-white/30 hover:text-white hover:bg-white/10 text-[10px] leading-none transition-colors"
-                      title="Rename"
-                    >✎</button>
-                    <button
-                      onClick={() => deleteFolder(folder.id)}
-                      className="p-1 rounded text-white/30 hover:text-red-400 hover:bg-white/10 text-[10px] leading-none transition-colors"
-                      title="Delete"
-                    >✕</button>
-                  </div>
+                      {/* Rename / delete */}
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                        <button
+                          onClick={() => { setRenamingId(folder.id); setRenameValue(folder.name); }}
+                          className="p-1.5 rounded text-white/40 hover:text-white hover:bg-white/10 text-[10px] leading-none transition-colors"
+                          title="Rename"
+                        >✎</button>
+                        <button
+                          onClick={() => deleteFolder(folder.id)}
+                          className="p-1.5 rounded text-white/40 hover:text-red-400 hover:bg-white/10 text-[10px] leading-none transition-colors"
+                          title="Delete"
+                        >✕</button>
+                      </div>
+                    </>
+                  )}
                 </div>
               );
             })}
@@ -152,12 +154,12 @@ export default function DashboardShell({
                   onChange={(e) => setNewFolderName(e.target.value)}
                   onKeyDown={(e) => e.key === "Escape" && setShowInput(false)}
                   placeholder="Folder name…"
-                  className="flex-1 px-2.5 py-1.5 rounded-lg bg-white/10 text-white text-xs placeholder-white/20 outline-none border border-white/10 focus:border-brand-blue/60 font-sans"
+                  className="flex-1 px-2.5 py-1.5 rounded-lg bg-white/10 text-white text-xs placeholder-white/30 outline-none border border-white/10 focus:border-blue-400/60 font-sans w-full"
                 />
                 <button
                   type="submit"
                   disabled={creating}
-                  className="px-2.5 py-1.5 rounded-lg bg-brand-blue text-white font-mono text-[10px] font-medium disabled:opacity-50"
+                  className="px-2.5 py-1.5 rounded-lg bg-blue-600 text-white font-mono text-[10px] font-medium disabled:opacity-50 flex-shrink-0"
                 >
                   {creating ? "…" : "Add"}
                 </button>
@@ -165,7 +167,7 @@ export default function DashboardShell({
             ) : (
               <button
                 onClick={() => setShowInput(true)}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-white/10 text-white/30 text-xs hover:border-white/20 hover:text-white/50 transition-colors"
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-white/10 text-white/40 text-xs hover:border-white/20 hover:text-white/60 transition-colors"
               >
                 <span className="text-base leading-none">+</span>
                 <span>New folder</span>
@@ -177,14 +179,14 @@ export default function DashboardShell({
         {/* User footer */}
         <div className="border-t border-white/5 px-4 py-4 flex flex-col gap-2">
           <div className="flex items-center gap-2.5">
-            <div className="w-6 h-6 rounded-full bg-brand-blue flex items-center justify-center font-mono text-[10px] text-white font-medium flex-shrink-0">
+            <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center font-mono text-[10px] text-white font-medium flex-shrink-0">
               {user.email?.[0].toUpperCase()}
             </div>
-            <span className="text-white/30 text-[11px] truncate">{user.email}</span>
+            <span className="text-white/40 text-[11px] truncate">{user.email}</span>
           </div>
           <button
             onClick={signOut}
-            className="font-mono text-[9px] tracking-widest uppercase text-white/20 hover:text-white/50 text-left transition-colors"
+            className="font-mono text-[9px] tracking-widest uppercase text-white/30 hover:text-white/60 text-left transition-colors pt-1"
           >
             Sign out
           </button>
@@ -192,7 +194,7 @@ export default function DashboardShell({
       </aside>
 
       {/* ── Main panel ── */}
-      <main className="flex-1 overflow-y-auto bg-brand-light min-w-0">
+      <main className="flex-1 overflow-y-auto bg-slate-50 min-w-0">
         {children}
       </main>
     </div>
