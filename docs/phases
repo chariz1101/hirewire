@@ -1,0 +1,14 @@
+Phase 1 — Foundation: The purple frontend layer (Auth UI) connects to Supabase's built-in Auth service. You get email/password and Google OAuth essentially for free without writing auth logic from scratch.
+
+Phase 2 — The tracker: The Dashboard and App Form boxes feed into the FastAPI CRUD API, which reads and writes to PostgreSQL. Supabase's row-level security (RLS) ensures users can only ever see their own data — a critical safety layer that's easy to miss until it bites you.
+
+Phase 3 — Reminder engine: The Cron box triggers the Reminder Engine daily. It queries applications where status is still "Applied" and the due date has passed, then calls Resend to fire off the email. The amber Resend section handles delivery.
+Phase 4 — Email scanner: The most complex piece. The Gmail scanner in FastAPI holds a stored OAuth token (saved in Supabase after the user grants permission), calls the Gmail API read-only, matches senders against company_email values in your DB, and flips the status to "Reply Received."
+
+A few implementation notes worth flagging now:
+
+On free tier limits: Render's free tier spins down after 15 minutes of inactivity, which will cause cold-start delays on your daily cron job. Railway's free tier has a monthly compute credit limit. Both are fine for MVP — just worth knowing so you're not confused when the first cron run after idle takes 30+ seconds.
+
+On the Gmail token: Store the refresh token (not just the access token) in Supabase. Access tokens expire in 1 hour — without the refresh token, your scanner breaks overnight.
+
+On schema: Consider adding a gmail_token column to your users table, or a separate integrations table if you anticipate other OAuth providers later.
