@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { Application, AppStatus } from "./applicationsView";
+import type { Application, AppStatus } from "./ApplicationsView";
 
 const STATUSES: AppStatus[] = [
   "Applied", "Reply Received", "Interview", "Offer", "Rejected", "Withdrawn",

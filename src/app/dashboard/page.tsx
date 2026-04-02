@@ -1,7 +1,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import EmptyFolders from "@/components/dashboard/emptyFolders";
+import EmptyFolders from "@/components/dashboard/EmptyFolders";
 
 export default async function DashboardPage() {
   const supabase = await createClient();

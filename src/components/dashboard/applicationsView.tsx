@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import ApplicationModal from "./applicationModal";
+import ApplicationModal from "./ApplicationModal";
 
 export type AppStatus =
   | "Applied" | "Reply Received" | "Interview"

@@ -3,7 +3,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
-import ApplicationsView from "@/components/dashboard/applicationsView";
+import ApplicationsView from "@/components/dashboard/ApplicationsView";
 
 export default async function FolderPage({
   params,
