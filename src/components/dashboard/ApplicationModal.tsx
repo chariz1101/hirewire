@@ -70,9 +70,10 @@ export default function ApplicationModal({
     };
 
     if (isNew) {
+      const { data: { user } } = await supabase.auth.getUser();
       const { data, error } = await supabase
         .from("applications")
-        .insert({ ...payload, folder_id: folderId })
+        .insert({ ...payload, folder_id: folderId, user_id: user!.id })
         .select().single();
       if (error) { setError(error.message); setLoading(false); return; }
       onSaved(data as Application, true);
