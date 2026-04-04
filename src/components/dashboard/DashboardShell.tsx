@@ -1,8 +1,5 @@
 "use client";
 
-// components/dashboard/DashboardShell.tsx
-// Updated for Phase 4: Gmail connect/disconnect button in sidebar footer.
-
 import { useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -121,17 +118,17 @@ export default function DashboardShell({
     <div className="flex h-screen overflow-hidden font-sans bg-brand-light">
 
       {/* ── Sidebar ── */}
-      <aside className="w-56 flex-shrink-0 flex flex-col bg-brand-navy h-screen overflow-hidden border-r border-white/5">
+      <aside className="w-80 flex-shrink-0 flex flex-col bg-brand-navy h-screen overflow-hidden border-r border-white/5">
 
         {/* Brand */}
         <div className="flex items-center gap-2 px-5 py-5 border-b border-white/5">
-          <span className="text-brand-blue font-mono text-lg leading-none">⌁</span>
-          <span className="font-mono text-xs font-medium tracking-widest uppercase text-white">HireWire</span>
+          <span className="text-white font-mono text-xxl leading-none">⌁</span>
+          <span className="font-mono text-regular font-medium tracking-widest uppercase text-white">HireWire</span>
         </div>
 
         {/* Folders */}
         <div className="flex flex-col flex-1 overflow-hidden">
-          <p className="font-mono text-[9px] tracking-widest uppercase text-white/20 px-5 pt-5 pb-2">
+          <p className="font-mono text-[10px] tracking-widest uppercase text-white/20 px-5 pt-5 pb-2">
             Workspaces
           </p>
 
@@ -155,15 +152,15 @@ export default function DashboardShell({
                         if (e.key === "Enter") renameFolder(folder.id);
                         if (e.key === "Escape") setRenamingId(null);
                       }}
-                      className="flex-1 mx-1 my-1 px-2 py-1 rounded-md bg-white/10 text-white text-xs outline-none border border-brand-blue/60 font-sans"
+                      className="flex-1 mx-1 my-1 px-2 py-1 rounded-md bg-white/10 text-white text-sm outline-none border border-brand-blue/60 font-sans"
                     />
                   ) : (
                     <button
                       onClick={() => router.push(`/dashboard/${folder.id}`)}
                       className="flex-1 flex items-center gap-2 px-3 py-2 text-left min-w-0"
                     >
-                      <span className={`text-[9px] flex-shrink-0 ${isActive ? "text-brand-blue" : "text-white/20"}`}>▸</span>
-                      <span className={`text-xs truncate ${isActive ? "text-white font-medium" : "text-white/50 group-hover:text-white/80"}`}>
+                      <span className={`text-xs flex-shrink-0 ${isActive ? "text-brand-blue" : "text-white/20"}`}>▸</span>
+                      <span className={`text-sm truncate ${isActive ? "text-white font-medium" : "text-white/50 group-hover:text-white/80"}`}>
                         {folder.name}
                       </span>
                     </button>
@@ -195,12 +192,12 @@ export default function DashboardShell({
                   onChange={(e) => setNewFolderName(e.target.value)}
                   onKeyDown={(e) => e.key === "Escape" && setShowInput(false)}
                   placeholder="Folder name…"
-                  className="flex-1 px-2.5 py-1.5 rounded-lg bg-white/10 text-white text-xs placeholder-white/20 outline-none border border-white/10 focus:border-brand-blue/60 font-sans"
+                  className="flex-1 px-2.5 py-1.5 rounded-lg bg-white/10 text-white text-sm placeholder-white/20 outline-none border border-white/10 focus:border-brand-blue/60 font-sans"
                 />
                 <button
                   type="submit"
                   disabled={creating}
-                  className="px-2.5 py-1.5 rounded-lg bg-brand-blue text-white font-mono text-[10px] font-medium disabled:opacity-50"
+                  className="px-2.5 py-1.5 rounded-lg bg-brand-blue text-white font-mono text-sm font-medium disabled:opacity-50"
                 >
                   {creating ? "…" : "Add"}
                 </button>
