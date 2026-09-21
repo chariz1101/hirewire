@@ -13,7 +13,7 @@ The build and typecheck pass, so everything below is a **behavior** bug, not a c
 
 | Severity | Count | Theme |
 |---|---|---|
-| 🔴 Critical | 2 | Gmail OAuth identity handling; token exposure |
+| ~~🔴 Critical~~ | ~~2~~ | ✅ Both fixed — see status notes below |
 | 🟠 Broken functionality | 7 | Dead Tailwind palette, missing routes, silent failures |
 | 🟡 Quality / correctness | 6 | Lint, schema idempotency, indexes, palette drift |
 | ⚪ Not implemented | 1 | Phases 3 & 4 backend |
@@ -28,6 +28,10 @@ token-grant flow all function correctly. The production build is green.
 ## 🔴 Critical
 
 ### 1. Gmail OAuth `state` is the user ID — account-linking CSRF
+
+> **Status: FIXED.** A random nonce is now stored in an httpOnly `gmail_oauth_state`
+> cookie and verified on return, and the callback derives identity from
+> `getUser()` instead of the URL. Shared constants live in `src/lib/gmail-oauth.ts`.
 
 **Files:** `src/app/auth/gmail/route.ts:26`, `src/app/auth/gmail/callback/route.ts:14`
 
@@ -73,6 +77,11 @@ Clear the cookie after use.
 > to return a `NextResponse` so the cookie can be attached.
 
 ### 2. Gmail refresh tokens are readable by the browser
+
+> **Status: FIXED IN SCHEMA — requires a manual Supabase migration.** The blanket
+> `for all` policy is replaced by insert/update/delete-only policies plus a
+> tokenless `integration_status` view. **Run the updated `hirewire_schema.sql` in
+> the Supabase SQL Editor** or the dashboard will not see existing connections.
 
 **File:** `hirewire_schema.sql:128-130`
 

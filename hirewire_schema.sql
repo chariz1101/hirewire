@@ -124,10 +124,42 @@ create policy "users: own row only"
   on public.users for all
   using (auth.uid() = id);
 
--- Integrations: full CRUD on own rows
-create policy "integrations: own rows only"
-  on public.integrations for all
+-- Integrations: the browser may WRITE its own tokens (the OAuth callback
+-- upserts them) and DELETE them (the Disconnect button), but must never be
+-- able to SELECT them. There is deliberately no select policy here: with RLS
+-- enabled and no permissive policy, reads from the anon/authenticated client
+-- are denied, so an XSS cannot exfiltrate a long-lived Gmail refresh token.
+-- The scanner backend uses the service_role key, which bypasses RLS.
+drop policy if exists "integrations: own rows only"   on public.integrations;
+drop policy if exists "integrations: insert own"      on public.integrations;
+drop policy if exists "integrations: update own"      on public.integrations;
+drop policy if exists "integrations: delete own"      on public.integrations;
+
+create policy "integrations: insert own"
+  on public.integrations for insert
+  with check (auth.uid() = user_id);
+
+create policy "integrations: update own"
+  on public.integrations for update
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create policy "integrations: delete own"
+  on public.integrations for delete
   using (auth.uid() = user_id);
+
+-- Connection STATUS, without the tokens. The frontend only needs to know
+-- whether a provider is linked. This is a security-definer view (the default,
+-- security_invoker = false), so it reads past the table's RLS; the explicit
+-- auth.uid() predicate is what scopes it to the caller.
+create or replace view public.integration_status
+  with (security_invoker = false) as
+  select id, user_id, provider, created_at, updated_at
+  from public.integrations
+  where user_id = (select auth.uid());
+
+revoke all on public.integration_status from anon;
+grant select on public.integration_status to authenticated;
 
 -- Folders: full CRUD on own rows
 create policy "folders: own rows only"
@@ -163,6 +195,7 @@ create index if not exists idx_folders_user_id
 
 -- ── DONE ─────────────────────────────────────────────────────
 -- Tables:      users, integrations, folders, applications
+-- Views:       integration_status (tokenless view of integrations)
 -- Triggers:    handle_new_user, set_updated_at (×2)
 -- RLS:         enabled on all 4 tables
 -- Indexes:     3 targeted indexes for reminder engine + scanner
