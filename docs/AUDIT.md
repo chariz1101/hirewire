@@ -13,7 +13,7 @@ The build and typecheck pass, so everything below is a **behavior** bug, not a c
 
 | Severity | Count | Theme |
 |---|---|---|
-| 🔴 Critical | 2 | Gmail OAuth identity handling; token exposure |
+| ~~🔴 Critical~~ | ~~2~~ | ✅ Both fixed — see status notes below |
 | 🟠 Broken functionality | 7 | Dead Tailwind palette, missing routes, silent failures |
 | 🟡 Quality / correctness | 6 | Lint, schema idempotency, indexes, palette drift |
 | ⚪ Not implemented | 1 | Phases 3 & 4 backend |
@@ -28,6 +28,10 @@ token-grant flow all function correctly. The production build is green.
 ## 🔴 Critical
 
 ### 1. Gmail OAuth `state` is the user ID — account-linking CSRF
+
+> **Status: FIXED.** A random nonce is now stored in an httpOnly `gmail_oauth_state`
+> cookie and verified on return, and the callback derives identity from
+> `getUser()` instead of the URL. Shared constants live in `src/lib/gmail-oauth.ts`.
 
 **Files:** `src/app/auth/gmail/route.ts:26`, `src/app/auth/gmail/callback/route.ts:14`
 
@@ -73,6 +77,16 @@ Clear the cookie after use.
 > to return a `NextResponse` so the cookie can be attached.
 
 ### 2. Gmail refresh tokens are readable by the browser
+
+> **Status: FIXED — requires a manual Supabase migration.** Tokens are hidden by
+> column-level GRANTs (RLS is row-level and cannot hide columns), writes go
+> through a `security definer` function so the browser role has no insert/update
+> privilege at all, and status is read from a tokenless `integration_status`
+> view. **Run the updated `hirewire_schema.sql` in the Supabase SQL Editor.**
+>
+> Verified against a real PostgreSQL 16 instance: token reads denied for the
+> owner and for other users, direct writes denied, connect/re-connect and
+> Disconnect working, and `service_role` still able to read tokens.
 
 **File:** `hirewire_schema.sql:128-130`
 
@@ -214,6 +228,10 @@ The second is a legitimate finding: the `?gmail=` parameter is read in an effect
 handler instead.
 
 ### 11. `hirewire_schema.sql` is not re-runnable
+
+> **Status: FIXED.** The enum is wrapped in a `duplicate_object` guard and every
+> policy and view is drop-guarded. Verified by applying the file three times in
+> a row against PostgreSQL 16 with no errors.
 
 The file's header instructs the reader to run it in the Supabase SQL Editor, but a second run fails:
 

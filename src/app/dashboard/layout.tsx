@@ -21,8 +21,11 @@ export default async function DashboardLayout({
       .from("folders")
       .select("id, name, created_at")
       .order("created_at", { ascending: true }),
+    // integration_status is a tokenless view of `integrations`. The table
+    // itself has no select policy, so OAuth tokens are never readable by the
+    // browser — this only reveals whether the provider is linked.
     supabase
-      .from("integrations")
+      .from("integration_status")
       .select("id")
       .eq("user_id", user.id)
       .eq("provider", "gmail")

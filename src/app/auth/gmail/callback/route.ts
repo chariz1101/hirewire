@@ -1,22 +1,45 @@
 // app/auth/gmail/callback/route.ts
 // Google redirects here after the user grants Gmail access.
-// Exchanges the auth code for access + refresh tokens,
-// then stores them in the integrations table.
+// Verifies the anti-CSRF nonce, exchanges the auth code for access +
+// refresh tokens, then stores them in the integrations table.
 
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { OAUTH_STATE_COOKIE, stateCookieOptions } from "@/lib/gmail-oauth";
 
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 
+/** Burn the one-shot nonce so it can never be replayed. */
+function clearState(response: NextResponse) {
+  response.cookies.set(OAUTH_STATE_COOKIE, "", stateCookieOptions(0));
+  return response;
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
-  const code   = searchParams.get("code");
-  const userId = searchParams.get("state");  // passed through from /auth/gmail
-  const error  = searchParams.get("error");
+  const code  = searchParams.get("code");
+  const state = searchParams.get("state");
+  const error = searchParams.get("error");
 
-  // User denied access
-  if (error || !code || !userId) {
-    return NextResponse.redirect(`${origin}/dashboard?gmail=denied`);
+  // Identity comes from the session cookie — NEVER from the query string.
+  // Trusting a URL parameter here would let an attacker link their own
+  // Gmail account to somebody else's HireWire account.
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return clearState(NextResponse.redirect(`${origin}/auth`));
+  }
+
+  // Verify the nonce before acting on anything else in the request.
+  const expectedState = request.cookies.get(OAUTH_STATE_COOKIE)?.value;
+  if (!state || !expectedState || state !== expectedState) {
+    return clearState(NextResponse.redirect(`${origin}/dashboard?gmail=error`));
+  }
+
+  // User denied access at the consent screen
+  if (error || !code) {
+    return clearState(NextResponse.redirect(`${origin}/dashboard?gmail=denied`));
   }
 
   // ── Exchange auth code for tokens ──────────────────────────────────────
@@ -34,7 +57,7 @@ export async function GET(request: NextRequest) {
 
   if (!tokenResponse.ok) {
     console.error("Gmail token exchange failed:", await tokenResponse.text());
-    return NextResponse.redirect(`${origin}/dashboard?gmail=error`);
+    return clearState(NextResponse.redirect(`${origin}/dashboard?gmail=error`));
   }
 
   const tokens = await tokenResponse.json();
@@ -44,32 +67,27 @@ export async function GET(request: NextRequest) {
     // This happens if the user already granted access before and didn't re-consent.
     // The prompt=consent in /auth/gmail should prevent this, but handle it just in case.
     console.error("No refresh token returned — user may need to revoke and reconnect.");
-    return NextResponse.redirect(`${origin}/dashboard?gmail=no_refresh_token`);
+    return clearState(NextResponse.redirect(`${origin}/dashboard?gmail=no_refresh_token`));
   }
 
   // ── Store tokens in Supabase integrations table ────────────────────────
-  const supabase = await createClient();
-
   const expiresAt = new Date(Date.now() + expires_in * 1000).toISOString();
 
-  const { error: dbError } = await supabase
-    .from("integrations")
-    .upsert(
-      {
-        user_id:          userId,
-        provider:         "gmail",
-        access_token,
-        refresh_token,
-        token_expires_at: expiresAt,
-        scope:            "https://www.googleapis.com/auth/gmail.readonly",
-      },
-      { onConflict: "user_id,provider" }  // update if already exists
-    );
+  // Written through a security-definer function rather than a direct upsert.
+  // The browser role has no insert/update privilege on `integrations` at all,
+  // and the function pins the row to auth.uid(), so tokens can be written but
+  // never read back by the client.
+  const { error: dbError } = await supabase.rpc("set_gmail_integration", {
+    p_access_token:     access_token,
+    p_refresh_token:    refresh_token,
+    p_token_expires_at: expiresAt,
+    p_scope:            "https://www.googleapis.com/auth/gmail.readonly",
+  });
 
   if (dbError) {
     console.error("Failed to save Gmail integration:", dbError);
-    return NextResponse.redirect(`${origin}/dashboard?gmail=error`);
+    return clearState(NextResponse.redirect(`${origin}/dashboard?gmail=error`));
   }
 
-  return NextResponse.redirect(`${origin}/dashboard?gmail=connected`);
+  return clearState(NextResponse.redirect(`${origin}/dashboard?gmail=connected`));
 }
