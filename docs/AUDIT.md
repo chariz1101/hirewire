@@ -117,6 +117,12 @@ The scanner backend uses the `service_role` key, which bypasses RLS, so it is un
 
 ### 3. Tailwind v4 never loads `tailwind.config.ts` — the whole `brand-*` palette is dead
 
+> **Status: FIXED.** The full palette (`brand-blue`, `brand-navy`, `brand-light`,
+> `brand-muted`) now lives in `@theme` in `globals.css`, and `tailwind.config.ts`
+> was deleted. Verified by grepping the compiled CSS in `.next/`: `.bg-brand-blue`,
+> `.text-brand-blue`, `.border-brand-blue`, `.bg-brand-light`, and `.bg-brand-navy`
+> all emit real rules now, and `--color-brand-navy` matches the config's `#0A0F2C`.
+
 **Files:** `tailwind.config.ts`, `src/app/globals.css`, `src/components/dashboard/DashboardShell.tsx`
 
 `postcss.config.mjs` uses `@tailwindcss/postcss` (Tailwind v4), where a JS/TS config is **only**
