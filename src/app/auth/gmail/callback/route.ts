@@ -73,19 +73,16 @@ export async function GET(request: NextRequest) {
   // ── Store tokens in Supabase integrations table ────────────────────────
   const expiresAt = new Date(Date.now() + expires_in * 1000).toISOString();
 
-  const { error: dbError } = await supabase
-    .from("integrations")
-    .upsert(
-      {
-        user_id:          user.id,   // from the session, not the URL
-        provider:         "gmail",
-        access_token,
-        refresh_token,
-        token_expires_at: expiresAt,
-        scope:            "https://www.googleapis.com/auth/gmail.readonly",
-      },
-      { onConflict: "user_id,provider" }  // update if already exists
-    );
+  // Written through a security-definer function rather than a direct upsert.
+  // The browser role has no insert/update privilege on `integrations` at all,
+  // and the function pins the row to auth.uid(), so tokens can be written but
+  // never read back by the client.
+  const { error: dbError } = await supabase.rpc("set_gmail_integration", {
+    p_access_token:     access_token,
+    p_refresh_token:    refresh_token,
+    p_token_expires_at: expiresAt,
+    p_scope:            "https://www.googleapis.com/auth/gmail.readonly",
+  });
 
   if (dbError) {
     console.error("Failed to save Gmail integration:", dbError);

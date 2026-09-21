@@ -78,10 +78,15 @@ Clear the cookie after use.
 
 ### 2. Gmail refresh tokens are readable by the browser
 
-> **Status: FIXED IN SCHEMA — requires a manual Supabase migration.** The blanket
-> `for all` policy is replaced by insert/update/delete-only policies plus a
-> tokenless `integration_status` view. **Run the updated `hirewire_schema.sql` in
-> the Supabase SQL Editor** or the dashboard will not see existing connections.
+> **Status: FIXED — requires a manual Supabase migration.** Tokens are hidden by
+> column-level GRANTs (RLS is row-level and cannot hide columns), writes go
+> through a `security definer` function so the browser role has no insert/update
+> privilege at all, and status is read from a tokenless `integration_status`
+> view. **Run the updated `hirewire_schema.sql` in the Supabase SQL Editor.**
+>
+> Verified against a real PostgreSQL 16 instance: token reads denied for the
+> owner and for other users, direct writes denied, connect/re-connect and
+> Disconnect working, and `service_role` still able to read tokens.
 
 **File:** `hirewire_schema.sql:128-130`
 
@@ -223,6 +228,10 @@ The second is a legitimate finding: the `?gmail=` parameter is read in an effect
 handler instead.
 
 ### 11. `hirewire_schema.sql` is not re-runnable
+
+> **Status: FIXED.** The enum is wrapped in a `duplicate_object` guard and every
+> policy and view is drop-guarded. Verified by applying the file three times in
+> a row against PostgreSQL 16 with no errors.
 
 The file's header instructs the reader to run it in the Supabase SQL Editor, but a second run fails:
 

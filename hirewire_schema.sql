@@ -79,14 +79,23 @@ create table if not exists public.folders (
 -- ── 4. APPLICATIONS ──────────────────────────────────────────
 -- Core tracker table. Each row = one job application.
 
-create type public.app_status as enum (
-  'Applied',
-  'Reply Received',
-  'Interview',
-  'Offer',
-  'Rejected',
-  'Withdrawn'
-);
+-- Postgres has no "create type if not exists", so guard it explicitly.
+-- Without this the whole file fails on a second run and every statement
+-- after this point — including the RLS policies — is silently skipped.
+do $$
+begin
+  create type public.app_status as enum (
+    'Applied',
+    'Reply Received',
+    'Interview',
+    'Offer',
+    'Rejected',
+    'Withdrawn'
+  );
+exception
+  when duplicate_object then null;
+end
+$$;
 
 create table if not exists public.applications (
   id                  uuid primary key default gen_random_uuid(),
@@ -120,20 +129,30 @@ alter table public.folders      enable row level security;
 alter table public.applications enable row level security;
 
 -- Users: can only read/update their own profile
+drop policy if exists "users: own row only" on public.users;
 create policy "users: own row only"
   on public.users for all
   using (auth.uid() = id);
 
--- Integrations: the browser may WRITE its own tokens (the OAuth callback
--- upserts them) and DELETE them (the Disconnect button), but must never be
--- able to SELECT them. There is deliberately no select policy here: with RLS
--- enabled and no permissive policy, reads from the anon/authenticated client
--- are denied, so an XSS cannot exfiltrate a long-lived Gmail refresh token.
--- The scanner backend uses the service_role key, which bypasses RLS.
-drop policy if exists "integrations: own rows only"   on public.integrations;
-drop policy if exists "integrations: insert own"      on public.integrations;
-drop policy if exists "integrations: update own"      on public.integrations;
-drop policy if exists "integrations: delete own"      on public.integrations;
+-- Integrations: the browser must never be able to READ the OAuth tokens,
+-- but still needs to manage its own row (the OAuth callback upserts, the
+-- Disconnect button deletes).
+--
+-- RLS is ROW-level, so it cannot hide individual columns — and dropping the
+-- select policy outright does not work either: PostgreSQL requires SELECT
+-- privileges for UPDATE/DELETE statements that reference table columns, so a
+-- `delete ... where provider = 'gmail'` or an `on conflict` upsert would
+-- silently match zero rows. Row visibility therefore stays, and COLUMN-level
+-- grants below are what actually keep the tokens unreadable.
+drop policy if exists "integrations: own rows only" on public.integrations;
+drop policy if exists "integrations: select own"    on public.integrations;
+drop policy if exists "integrations: insert own"    on public.integrations;
+drop policy if exists "integrations: update own"    on public.integrations;
+drop policy if exists "integrations: delete own"    on public.integrations;
+
+create policy "integrations: select own"
+  on public.integrations for select
+  using (auth.uid() = user_id);
 
 create policy "integrations: insert own"
   on public.integrations for insert
@@ -148,11 +167,65 @@ create policy "integrations: delete own"
   on public.integrations for delete
   using (auth.uid() = user_id);
 
--- Connection STATUS, without the tokens. The frontend only needs to know
--- whether a provider is linked. This is a security-definer view (the default,
--- security_invoker = false), so it reads past the table's RLS; the explicit
--- auth.uid() predicate is what scopes it to the caller.
-create or replace view public.integration_status
+-- Column-level privileges: this is what stops an XSS from reading a
+-- long-lived Gmail refresh token. The browser roles get SELECT on the
+-- harmless columns only -- never access_token or refresh_token.
+--
+-- Writes do NOT go through these grants at all. An `on conflict do update`
+-- upsert requires TABLE-level SELECT (column grants are not enough), which
+-- would hand the tokens straight back to the browser. So token writes go
+-- through set_gmail_integration() below instead, and the browser role is
+-- given no insert/update privilege whatsoever.
+revoke all on public.integrations from anon, authenticated;
+
+grant select (id, user_id, provider, token_expires_at, scope, created_at, updated_at)
+  on public.integrations to authenticated;
+
+-- DELETE is safe to expose directly: RLS limits it to the caller's own row
+-- and it leaks nothing. This is what the Disconnect button uses.
+grant delete on public.integrations to authenticated;
+
+-- The scanner backend uses the service_role key, which bypasses RLS and
+-- needs the tokens in full.
+grant all on public.integrations to service_role;
+
+-- Token writer. security definer so it runs as the owner and needs no table
+-- privileges on the caller's side; auth.uid() is baked in, so a caller can
+-- only ever write their OWN row and cannot read anything back.
+create or replace function public.set_gmail_integration(
+  p_access_token    text,
+  p_refresh_token   text,
+  p_token_expires_at timestamptz,
+  p_scope           text
+) returns void
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  if auth.uid() is null then
+    raise exception 'not authenticated';
+  end if;
+
+  insert into public.integrations
+    (user_id, provider, access_token, refresh_token, token_expires_at, scope)
+  values
+    (auth.uid(), 'gmail', p_access_token, p_refresh_token, p_token_expires_at, p_scope)
+  on conflict (user_id, provider) do update
+    set access_token     = excluded.access_token,
+        refresh_token    = excluded.refresh_token,
+        token_expires_at = excluded.token_expires_at,
+        scope            = excluded.scope;
+end;
+$$;
+
+revoke all on function public.set_gmail_integration(text, text, timestamptz, text) from anon;
+grant execute on function public.set_gmail_integration(text, text, timestamptz, text) to authenticated;
+
+-- Convenience read surface for the frontend: connection status, no tokens.
+-- Security-definer (security_invoker = false) so it reads past RLS; the
+-- explicit auth.uid() predicate is what scopes it to the caller.
+drop view if exists public.integration_status;
+create view public.integration_status
   with (security_invoker = false) as
   select id, user_id, provider, created_at, updated_at
   from public.integrations
@@ -162,11 +235,13 @@ revoke all on public.integration_status from anon;
 grant select on public.integration_status to authenticated;
 
 -- Folders: full CRUD on own rows
+drop policy if exists "folders: own rows only" on public.folders;
 create policy "folders: own rows only"
   on public.folders for all
   using (auth.uid() = user_id);
 
 -- Applications: full CRUD on own rows
+drop policy if exists "applications: own rows only" on public.applications;
 create policy "applications: own rows only"
   on public.applications for all
   using (auth.uid() = user_id);
@@ -199,4 +274,5 @@ create index if not exists idx_folders_user_id
 -- Triggers:    handle_new_user, set_updated_at (×2)
 -- RLS:         enabled on all 4 tables
 -- Indexes:     3 targeted indexes for reminder engine + scanner
+-- Re-runnable: yes — every statement is guarded, safe to run repeatedly
 -- ============================================================
