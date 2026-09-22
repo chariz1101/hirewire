@@ -160,6 +160,11 @@ The config's `content` globs are also wrong (`./app/**`, `./components/**` — e
 
 ### 4. `text-xxl` and `text-regular` are not Tailwind classes
 
+> **Status: FIXED.** Replaced with `text-2xl` and `text-base`. Verified by
+> grepping the compiled CSS in `.next/`: both now emit real `font-size`/
+> `line-height` rules, and `text-xxl`/`text-regular` no longer appear anywhere
+> in the output.
+
 **File:** `src/components/dashboard/DashboardShell.tsx:125-126` (sidebar logo)
 
 Neither emits any CSS. Use `text-2xl` and `text-base`.

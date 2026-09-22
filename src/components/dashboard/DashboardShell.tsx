@@ -122,8 +122,8 @@ export default function DashboardShell({
 
         {/* Brand */}
         <div className="flex items-center gap-2 px-5 py-5 border-b border-white/5">
-          <span className="text-white font-mono text-xxl leading-none">⌁</span>
-          <span className="font-mono text-regular font-medium tracking-widest uppercase text-white">HireWire</span>
+          <span className="text-white font-mono text-2xl leading-none">⌁</span>
+          <span className="font-mono text-base font-medium tracking-widest uppercase text-white">HireWire</span>
         </div>
 
         {/* Folders */}
