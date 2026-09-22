@@ -160,11 +160,24 @@ The config's `content` globs are also wrong (`./app/**`, `./components/**` — e
 
 ### 4. `text-xxl` and `text-regular` are not Tailwind classes
 
+> **Status: FIXED.** Replaced with `text-2xl` and `text-base`. Verified by
+> grepping the compiled CSS in `.next/`: both now emit real `font-size`/
+> `line-height` rules, and `text-xxl`/`text-regular` no longer appear anywhere
+> in the output.
+
 **File:** `src/components/dashboard/DashboardShell.tsx:125-126` (sidebar logo)
 
 Neither emits any CSS. Use `text-2xl` and `text-base`.
 
 ### 5. Password reset is a dead end
+
+> **Status: FIXED.** Added `src/app/auth/reset/page.tsx`. It listens for the
+> `PASSWORD_RECOVERY` auth event (fired once the Supabase browser client
+> exchanges the recovery link's code for a session) and, once ready, shows a
+> form that calls `supabase.auth.updateUser({ password })`. Verified with
+> `npx tsc --noEmit` (clean), `npx next build` (the route now appears as a
+> static `/auth/reset` page in the build output), and `npx eslint .`
+> (still only the 2 pre-existing errors tracked as #10 — no new ones).
 
 **File:** `src/app/auth/page.tsx:29`
 
