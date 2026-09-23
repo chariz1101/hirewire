@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ApplicationModal from "./ApplicationModal";
+import { formatLocalDate } from "@/lib/date";
 
 export type AppStatus =
   | "Applied" | "Reply Received" | "Interview"
@@ -119,7 +120,7 @@ export default function ApplicationsView({
                   </td>
                   <td className="py-3.5 pr-4 text-slate-500">{app.company_name}</td>
                   <td className="py-3.5 pr-4 font-mono text-[11px] text-slate-500 whitespace-nowrap">
-                    {new Date(app.date_applied).toLocaleDateString("en-PH", {
+                    {formatLocalDate(app.date_applied, {
                       month: "short", day: "numeric", year: "numeric",
                     })}
                   </td>

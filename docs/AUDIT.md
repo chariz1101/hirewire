@@ -205,6 +205,17 @@ explanation.
 
 ### 7. Date handling uses UTC instead of local time
 
+> **Status: FIXED.** Added `src/lib/date.ts` with `todayLocalDate()` (builds
+> today's `YYYY-MM-DD` from local `Date` components instead of
+> `toISOString()`) and `formatLocalDate()` (parses a bare `YYYY-MM-DD` as a
+> local calendar date via `new Date(year, month - 1, day)` instead of
+> letting `new Date(dateStr)` interpret it as UTC midnight). Both call sites
+> now use these helpers. Verified with `npx tsc --noEmit` (clean),
+> `npx next build` (succeeds), `npx eslint .` (still only the 2 pre-existing
+> errors tracked as #10 — no new ones), and a Node script run with
+> `TZ=Asia/Manila` confirming `todayLocalDate()` returns the local calendar
+> date and `formatLocalDate()` doesn't shift day-boundary dates.
+
 **Files:** `src/components/dashboard/ApplicationModal.tsx:39`, `src/components/dashboard/ApplicationsView.tsx:122`
 
 ```ts

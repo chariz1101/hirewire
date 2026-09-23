@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { todayLocalDate } from "@/lib/date";
 import type { Application, AppStatus } from "./ApplicationsView";
 
 const STATUSES: AppStatus[] = [
@@ -36,7 +37,7 @@ export default function ApplicationModal({
     notes:               application?.notes               ?? "",
     status:              (application?.status             ?? "Applied") as AppStatus,
     reminder_preference: application?.reminder_preference ?? 7,
-    date_applied:        application?.date_applied        ?? new Date().toISOString().split("T")[0],
+    date_applied:        application?.date_applied        ?? todayLocalDate(),
   });
 
   const [loading, setLoading]     = useState(false);
