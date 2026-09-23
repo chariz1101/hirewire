@@ -1,14 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Mode = "login" | "signup" | "forgot";
 
+const CALLBACK_ERROR_MESSAGES: Record<string, string> = {
+  auth_callback_failed: "Google sign-in failed. Please try again.",
+};
+
 export default function AuthPage() {
+  return (
+    <Suspense fallback={null}>
+      <AuthPageInner />
+    </Suspense>
+  );
+}
+
+function AuthPageInner() {
   const router = useRouter();
   const supabase = createClient();
+  const searchParams = useSearchParams();
 
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
@@ -16,6 +29,12 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+
+  const callbackError = searchParams.get("error");
+  const callbackErrorMessage = callbackError
+    ? CALLBACK_ERROR_MESSAGES[callbackError] ?? "Something went wrong signing in. Please try again."
+    : null;
+  const displayedError = error ?? callbackErrorMessage;
 
   const clearMessages = () => { setError(null); setNotice(null); };
 
@@ -190,9 +209,9 @@ export default function AuthPage() {
                 </div>
               )}
 
-              {error  && (
+              {displayedError && (
                 <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2.5">
-                  {error}
+                  {displayedError}
                 </p>
               )}
               {notice && (
