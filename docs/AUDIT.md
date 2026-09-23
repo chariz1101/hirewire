@@ -189,6 +189,14 @@ Neither emits any CSS. Use `text-2xl` and `text-base`.
 
 ### 6. `?error=auth_callback_failed` is never displayed
 
+> **Status: FIXED.** The auth page now reads the `error` query param via
+> `useSearchParams` (wrapped in a `Suspense` boundary so `/auth` still
+> prerenders statically) and shows a friendly message in the existing error
+> slot, falling back to a generic message for any unrecognized error code.
+> Verified with `npx tsc --noEmit` (clean), `npx next build` (`/auth` still
+> shows as a static `○` route), and `npx eslint .` (still only the 2
+> pre-existing errors tracked as #10 — no new ones).
+
 **Files:** `src/app/auth/callback/route.ts:21`, `src/app/auth/page.tsx`
 
 The callback redirects with that error parameter on failure, but the auth page never reads
