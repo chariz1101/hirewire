@@ -271,7 +271,7 @@ export default function DashboardShell({
           <div className="flex flex-col gap-2 pt-1 border-t border-white/5">
             <div className="flex items-center gap-2.5">
               <div className="w-6 h-6 rounded-full bg-brand-blue flex items-center justify-center font-mono text-[10px] text-white font-medium flex-shrink-0">
-                {user.email?.[0].toUpperCase()}
+                {user.email?.[0]?.toUpperCase()}
               </div>
               <span className="text-white/30 text-[11px] truncate">{user.email}</span>
             </div>

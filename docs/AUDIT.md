@@ -248,6 +248,11 @@ indication why.
 
 ### 9. Avatar initial can throw on an empty email
 
+> **Status: FIXED.** Added a second optional-chain guard so an empty-string
+> email no longer throws: `user.email?.[0]?.toUpperCase()`. Verified with
+> `npx tsc --noEmit` (clean), `npx next build` (succeeds), and `npx eslint .`
+> (still only the 2 pre-existing errors tracked as #10 — no new ones).
+
 **File:** `src/components/dashboard/DashboardShell.tsx:262`
 
 ```ts
