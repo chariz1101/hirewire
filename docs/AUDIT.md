@@ -231,6 +231,13 @@ negative UTC offset.
 
 ### 8. Folder mutations fail silently
 
+> **Status: FIXED.** Generalised `gmailNotice` into a shared `notice` toast
+> (with a `showNotice` helper), and `createFolder`, `renameFolder`,
+> `deleteFolder`, and `disconnectGmail` now call it on their error branch
+> with a user-facing message. Verified with `npx tsc --noEmit` (clean),
+> `npx next build` (succeeds), and `npx eslint .` (still only the 2
+> pre-existing errors tracked as #10 — no new ones).
+
 **File:** `src/components/dashboard/DashboardShell.tsx:69, 82, 105`
 
 `createFolder`, `renameFolder`, and `deleteFolder` each guard with `if (!error)` and take no action

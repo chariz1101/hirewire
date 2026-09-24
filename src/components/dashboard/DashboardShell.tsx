@@ -30,9 +30,14 @@ export default function DashboardShell({
   const [renamingId, setRenamingId]       = useState<string | null>(null);
   const [renameValue, setRenameValue]     = useState("");
   const [gmailConnected, setGmailConnected] = useState(initialGmailConnected);
-  const [gmailNotice, setGmailNotice]     = useState<string | null>(null);
+  const [notice, setNotice]               = useState<string | null>(null);
 
   const activeFolderId = pathname.split("/")[2] ?? null;
+
+  function showNotice(message: string, duration = 4000) {
+    setNotice(message);
+    setTimeout(() => setNotice(null), duration);
+  }
 
   // Handle ?gmail= query param set by OAuth callback
   useEffect(() => {
@@ -41,11 +46,11 @@ export default function DashboardShell({
 
     if (status === "connected") {
       setGmailConnected(true);
-      setGmailNotice("Gmail connected! Your inbox will be scanned daily.");
+      setNotice("Gmail connected! Your inbox will be scanned daily.");
     } else if (status === "denied") {
-      setGmailNotice("Gmail access was denied.");
+      setNotice("Gmail access was denied.");
     } else if (status === "error" || status === "no_refresh_token") {
-      setGmailNotice("Something went wrong. Try connecting again.");
+      setNotice("Something went wrong. Try connecting again.");
     }
 
     // Clean the query param from the URL without a full reload
@@ -53,7 +58,7 @@ export default function DashboardShell({
     url.searchParams.delete("gmail");
     window.history.replaceState({}, "", url.toString());
 
-    const timer = setTimeout(() => setGmailNotice(null), 5000);
+    const timer = setTimeout(() => setNotice(null), 5000);
     return () => clearTimeout(timer);
   }, [searchParams]);
 
@@ -71,6 +76,8 @@ export default function DashboardShell({
       setNewFolderName("");
       setShowInput(false);
       router.push(`/dashboard/${data.id}`);
+    } else {
+      showNotice("Couldn't create folder. Please try again.");
     }
     setCreating(false);
   }
@@ -81,6 +88,8 @@ export default function DashboardShell({
       .from("folders").update({ name: renameValue.trim() }).eq("id", id);
     if (!error)
       setFolders(folders.map(f => f.id === id ? { ...f, name: renameValue.trim() } : f));
+    else
+      showNotice("Couldn't rename folder. Please try again.");
     setRenamingId(null);
   }
 
@@ -92,6 +101,8 @@ export default function DashboardShell({
       setFolders(remaining);
       if (activeFolderId === id)
         router.push(remaining.length > 0 ? `/dashboard/${remaining[0].id}` : "/dashboard");
+    } else {
+      showNotice("Couldn't delete folder. Please try again.");
     }
   }
 
@@ -104,8 +115,9 @@ export default function DashboardShell({
       .eq("provider", "gmail");
     if (!error) {
       setGmailConnected(false);
-      setGmailNotice("Gmail disconnected.");
-      setTimeout(() => setGmailNotice(null), 4000);
+      showNotice("Gmail disconnected.");
+    } else {
+      showNotice("Couldn't disconnect Gmail. Please try again.");
     }
   }
 
@@ -217,10 +229,10 @@ export default function DashboardShell({
         {/* ── Footer ── */}
         <div className="border-t border-white/5 px-4 py-4 flex flex-col gap-3">
 
-          {/* Gmail notice toast */}
-          {gmailNotice && (
+          {/* Notice toast */}
+          {notice && (
             <p className="text-[10px] text-brand-blue/80 bg-brand-blue/10 rounded-lg px-2.5 py-2 leading-relaxed">
-              {gmailNotice}
+              {notice}
             </p>
           )}
 
