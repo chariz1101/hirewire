@@ -7,6 +7,13 @@ import type { User } from "@supabase/supabase-js";
 
 type Folder = { id: string; name: string; created_at: string };
 
+function gmailStatusNotice(status: string | null): string | null {
+  if (status === "connected") return "Gmail connected! Your inbox will be scanned daily.";
+  if (status === "denied") return "Gmail access was denied.";
+  if (status === "error" || status === "no_refresh_token") return "Something went wrong. Try connecting again.";
+  return null;
+}
+
 export default function DashboardShell({
   user,
   initialFolders,
@@ -29,8 +36,10 @@ export default function DashboardShell({
   const [showInput, setShowInput]         = useState(false);
   const [renamingId, setRenamingId]       = useState<string | null>(null);
   const [renameValue, setRenameValue]     = useState("");
-  const [gmailConnected, setGmailConnected] = useState(initialGmailConnected);
-  const [notice, setNotice]               = useState<string | null>(null);
+  const [gmailConnected, setGmailConnected] = useState(
+    () => initialGmailConnected || searchParams.get("gmail") === "connected"
+  );
+  const [notice, setNotice] = useState<string | null>(() => gmailStatusNotice(searchParams.get("gmail")));
 
   const activeFolderId = pathname.split("/")[2] ?? null;
 
@@ -39,21 +48,12 @@ export default function DashboardShell({
     setTimeout(() => setNotice(null), duration);
   }
 
-  // Handle ?gmail= query param set by OAuth callback
+  // Clean up the ?gmail= query param set by the OAuth callback, and let its
+  // notice (already reflected in initial state above) expire on its own.
   useEffect(() => {
     const status = searchParams.get("gmail");
     if (!status) return;
 
-    if (status === "connected") {
-      setGmailConnected(true);
-      setNotice("Gmail connected! Your inbox will be scanned daily.");
-    } else if (status === "denied") {
-      setNotice("Gmail access was denied.");
-    } else if (status === "error" || status === "no_refresh_token") {
-      setNotice("Something went wrong. Try connecting again.");
-    }
-
-    // Clean the query param from the URL without a full reload
     const url = new URL(window.location.href);
     url.searchParams.delete("gmail");
     window.history.replaceState({}, "", url.toString());

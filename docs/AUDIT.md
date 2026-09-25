@@ -268,6 +268,17 @@ and `.toUpperCase()` on it throws, crashing the sidebar. Use `user.email?.[0]?.t
 
 ### 10. Lint currently fails
 
+> **Status: FIXED.** Escaped the apostrophe in the reset-password copy with
+> `&apos;`. For the effect issue, the Gmail-status notice and
+> `gmailConnected` flag are now computed from `searchParams` in the
+> `useState` lazy initializers (read during the initial render, not set
+> synchronously inside the effect body); the effect itself only clears the
+> `?gmail=` query param and schedules the notice's expiry inside a
+> `setTimeout` callback, which the rule doesn't flag. Verified with
+> `npx tsc --noEmit` (clean), `npx eslint .` (0 errors — fully clean, not
+> just "no new errors"), and `npx next build` (succeeds, all routes
+> including `/auth` and `/auth/reset` still present).
+
 `npx eslint .` reports 2 errors:
 
 - `src/app/auth/page.tsx:137` — unescaped `'` (`react/no-unescaped-entities`).
