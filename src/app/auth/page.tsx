@@ -153,7 +153,7 @@ function AuthPageInner() {
             {isForgot && (
               <div className="mb-6">
                 <h2 className="text-lg font-semibold text-slate-900">Reset password</h2>
-                <p className="text-sm text-slate-500 mt-1">We'll send a reset link to your email.</p>
+                <p className="text-sm text-slate-500 mt-1">We&apos;ll send a reset link to your email.</p>
               </div>
             )}
 
