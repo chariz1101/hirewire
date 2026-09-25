@@ -304,6 +304,12 @@ prefix each policy with `drop policy if exists`.
 
 ### 12. Missing index on the folder-page query
 
+> **Status: FIXED — requires a manual Supabase migration.** Added
+> `idx_applications_folder_date` on `(folder_id, date_applied desc)` to
+> `hirewire_schema.sql`, using `create index if not exists` so the file
+> stays safe to re-run. **Run the updated `hirewire_schema.sql` in the
+> Supabase SQL Editor.**
+
 **File:** `src/app/dashboard/[folderId]/page.tsx:25`
 
 The query filters on `folder_id` and orders by `date_applied`; no index covers it. The three existing

@@ -267,6 +267,10 @@ create index if not exists idx_applications_company_email
 create index if not exists idx_folders_user_id
   on public.folders (user_id);
 
+-- Speed up the folder-page query (filter by folder_id, order by date_applied desc)
+create index if not exists idx_applications_folder_date
+  on public.applications (folder_id, date_applied desc);
+
 
 -- ── DONE ─────────────────────────────────────────────────────
 -- Tables:      users, integrations, folders, applications
