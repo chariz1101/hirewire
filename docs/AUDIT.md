@@ -322,6 +322,12 @@ create index if not exists idx_applications_folder_date
 
 ### 13. Add explicit user scoping as defense-in-depth
 
+> **Status: FIXED.** Added `.eq("user_id", user.id)` to the folders query in
+> `layout.tsx`, and to both the folder and applications queries in
+> `[folderId]/page.tsx` (which now also fetches the current user). Verified
+> with `npx tsc --noEmit` (clean), `npx next build` (succeeds, both dynamic
+> routes still present), and `npx eslint .` (0 errors).
+
 **Files:** `src/app/dashboard/layout.tsx:22`, `src/app/dashboard/[folderId]/page.tsx:19`
 
 Both rely solely on RLS to scope rows. Adding `.eq("user_id", user.id)` costs nothing and provides
