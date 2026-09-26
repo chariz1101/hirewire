@@ -53,17 +53,17 @@ export default function ApplicationsView({
     <div className="flex flex-col min-h-full">
 
       {/* Header */}
-      <header className="flex items-center justify-between px-10 py-7 bg-white border-b border-blue-100 sticky top-0 z-10">
+      <header className="flex items-center justify-between px-10 py-7 bg-white border-b border-brand-light sticky top-0 z-10">
         <div>
-          <div className="w-6 h-0.5 bg-blue-600 mb-2" />
-          <h1 className="text-xl font-semibold text-slate-900 tracking-tight">{folder.name}</h1>
-          <p className="font-mono text-[10px] text-slate-500 tracking-widest uppercase mt-0.5">
+          <div className="w-6 h-0.5 bg-brand-blue mb-2" />
+          <h1 className="text-xl font-semibold text-brand-navy tracking-tight">{folder.name}</h1>
+          <p className="font-mono text-[10px] text-brand-muted tracking-widest uppercase mt-0.5">
             {apps.length} application{apps.length !== 1 ? "s" : ""}
           </p>
         </div>
         <button
           onClick={openNew}
-          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl font-mono text-xs font-medium tracking-wide hover:bg-blue-700 active:scale-[0.98] transition-all"
+          className="flex items-center gap-2 px-4 py-2.5 bg-brand-blue text-white rounded-xl font-mono text-xs font-medium tracking-wide hover:bg-brand-blue/90 active:scale-[0.98] transition-all"
         >
           + Add application
         </button>
@@ -72,12 +72,12 @@ export default function ApplicationsView({
       {/* Empty state */}
       {apps.length === 0 ? (
         <div className="flex flex-col items-center justify-center flex-1 gap-3 py-24 text-center px-6">
-          <div className="w-12 h-12 rounded-2xl bg-blue-600/10 flex items-center justify-center text-2xl mb-2">📋</div>
-          <p className="text-base font-semibold text-slate-900">No applications yet</p>
-          <p className="text-sm text-slate-500 max-w-xs">Add your first one to start tracking your job hunt.</p>
+          <div className="w-12 h-12 rounded-2xl bg-brand-blue/10 flex items-center justify-center text-2xl mb-2">📋</div>
+          <p className="text-base font-semibold text-brand-navy">No applications yet</p>
+          <p className="text-sm text-brand-muted max-w-xs">Add your first one to start tracking your job hunt.</p>
           <button
             onClick={openNew}
-            className="mt-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl font-mono text-xs font-medium tracking-wide hover:bg-blue-700 transition-colors"
+            className="mt-2 px-5 py-2.5 bg-brand-blue text-white rounded-xl font-mono text-xs font-medium tracking-wide hover:bg-brand-blue/90 transition-colors"
           >
             + Add application
           </button>
@@ -86,11 +86,11 @@ export default function ApplicationsView({
         <div className="px-10 py-6 overflow-x-auto">
           <table className="w-full text-sm border-collapse">
             <thead>
-              <tr className="border-b border-blue-100">
+              <tr className="border-b border-brand-light">
                 {["Role", "Company", "Date applied", "Status", "Reminder", ""].map((h, i) => (
                   <th
                     key={i}
-                    className="text-left font-mono text-[9px] tracking-widest uppercase text-slate-500 pb-3 pr-4 font-normal"
+                    className="text-left font-mono text-[9px] tracking-widest uppercase text-brand-muted pb-3 pr-4 font-normal"
                   >
                     {h}
                   </th>
@@ -102,24 +102,24 @@ export default function ApplicationsView({
                 <tr
                   key={app.id}
                   onClick={() => openEdit(app)}
-                  className="border-b border-blue-50 hover:bg-slate-50 cursor-pointer group transition-colors"
+                  className="border-b border-brand-light hover:bg-brand-light/50 cursor-pointer group transition-colors"
                 >
                   <td className="py-3.5 pr-4">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-slate-900">{app.job_title}</span>
+                      <span className="font-medium text-brand-navy">{app.job_title}</span>
                       {app.job_url && (
                         <a
                           href={app.job_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="text-slate-400 hover:text-blue-600 text-xs transition-colors"
+                          className="text-brand-muted hover:text-brand-blue text-xs transition-colors"
                         >↗</a>
                       )}
                     </div>
                   </td>
-                  <td className="py-3.5 pr-4 text-slate-500">{app.company_name}</td>
-                  <td className="py-3.5 pr-4 font-mono text-[11px] text-slate-500 whitespace-nowrap">
+                  <td className="py-3.5 pr-4 text-brand-muted">{app.company_name}</td>
+                  <td className="py-3.5 pr-4 font-mono text-[11px] text-brand-muted whitespace-nowrap">
                     {formatLocalDate(app.date_applied, {
                       month: "short", day: "numeric", year: "numeric",
                     })}
@@ -129,11 +129,11 @@ export default function ApplicationsView({
                       {app.status}
                     </span>
                   </td>
-                  <td className="py-3.5 pr-4 font-mono text-[11px] text-slate-500">
+                  <td className="py-3.5 pr-4 font-mono text-[11px] text-brand-muted">
                     {app.reminder_preference ? `${app.reminder_preference}d` : "—"}
                   </td>
                   <td className="py-3.5 text-right">
-                    <span className="font-mono text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="font-mono text-[10px] text-brand-muted opacity-0 group-hover:opacity-100 transition-opacity">
                       Edit →
                     </span>
                   </td>

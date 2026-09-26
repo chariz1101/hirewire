@@ -97,28 +97,28 @@ export default function ApplicationModal({
     onDeleted(application!.id);
   }
 
-  const inputCls = "w-full px-3 py-2.5 rounded-xl border border-blue-100 bg-slate-50 text-slate-900 text-sm placeholder-slate-400 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 transition-all font-sans";
-  const labelCls = "block text-[10px] font-mono tracking-widest uppercase text-slate-500 mb-1.5";
+  const inputCls = "w-full px-3 py-2.5 rounded-xl border border-brand-light bg-brand-light/40 text-brand-navy text-sm placeholder-brand-muted outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all font-sans";
+  const labelCls = "block text-[10px] font-mono tracking-widest uppercase text-brand-muted mb-1.5";
 
   return (
     <div
       ref={overlayRef}
       onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
-      className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 px-4"
+      className="fixed inset-0 bg-brand-navy/50 backdrop-blur-sm flex items-center justify-center z-50 px-4"
     >
-      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl border border-blue-50">
+      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl border border-brand-light">
 
         {/* Header */}
         <div className="flex items-center justify-between px-7 pt-6 pb-0 sticky top-0 bg-white z-10">
           <div>
-            <div className="w-5 h-0.5 bg-blue-600 mb-2" />
-            <h2 className="text-base font-semibold text-slate-900 tracking-tight">
+            <div className="w-5 h-0.5 bg-brand-blue mb-2" />
+            <h2 className="text-base font-semibold text-brand-navy tracking-tight">
               {isNew ? "Add application" : "Edit application"}
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-colors text-sm leading-none"
+            className="p-1.5 rounded-lg text-brand-muted hover:text-brand-navy hover:bg-brand-light/40 transition-colors text-sm leading-none"
           >✕</button>
         </div>
 
@@ -126,7 +126,7 @@ export default function ApplicationModal({
         <form onSubmit={handleSubmit} className="px-7 py-5 space-y-4">
           {/* Job title — full width */}
           <div>
-            <label className={labelCls}>Job title <span className="text-blue-600">*</span></label>
+            <label className={labelCls}>Job title <span className="text-brand-blue">*</span></label>
             <input
               className={inputCls}
               value={form.job_title}
@@ -139,7 +139,7 @@ export default function ApplicationModal({
           {/* Company + email row */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className={labelCls}>Company <span className="text-blue-600">*</span></label>
+              <label className={labelCls}>Company <span className="text-brand-blue">*</span></label>
               <input
                 className={inputCls}
                 value={form.company_name}
@@ -207,8 +207,8 @@ export default function ApplicationModal({
                   onClick={() => set("reminder_preference", r.value)}
                   className={`flex-1 py-2 rounded-xl border font-mono text-xs font-medium transition-all ${
                     form.reminder_preference === r.value
-                      ? "border-blue-600 bg-blue-600 text-white"
-                      : "border-blue-100 bg-slate-50 text-slate-400 hover:border-blue-600/40 hover:text-slate-900"
+                      ? "border-brand-blue bg-brand-blue text-white"
+                      : "border-brand-light bg-brand-light/40 text-brand-muted hover:border-brand-blue/40 hover:text-brand-navy"
                   }`}
                 >
                   {r.label}
@@ -237,7 +237,7 @@ export default function ApplicationModal({
           )}
 
           {/* Actions */}
-          <div className="flex items-center justify-between pt-2 border-t border-blue-50">
+          <div className="flex items-center justify-between pt-2 border-t border-brand-light">
             {!isNew ? (
               <button
                 type="button"
@@ -257,14 +257,14 @@ export default function ApplicationModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded-xl border border-blue-100 text-slate-400 text-sm hover:border-blue-200 hover:text-slate-900 transition-colors"
+                className="px-4 py-2 rounded-xl border border-brand-light text-brand-muted text-sm hover:border-brand-blue/40 hover:text-brand-navy transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-5 py-2 rounded-xl bg-blue-600 text-white font-mono text-xs font-medium tracking-wide hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-5 py-2 rounded-xl bg-brand-blue text-white font-mono text-xs font-medium tracking-wide hover:bg-brand-blue/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? "Saving…" : isNew ? "Add application" : "Save changes"}
               </button>

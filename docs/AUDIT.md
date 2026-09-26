@@ -335,6 +335,19 @@ a second layer if a policy is ever changed incorrectly.
 
 ### 14. Two disconnected colour palettes
 
+> **Status: FIXED.** `EmptyFolders`, `ApplicationsView`, and `ApplicationModal` now
+> use `brand-blue`/`brand-navy`/`brand-light`/`brand-muted` in place of the raw
+> `blue-*`/`slate-*` chrome (accents, headings, body text, borders, hover states),
+> matching `DashboardShell`. The per-status badge colours in `STATUS_STYLE`
+> (`ApplicationsView.tsx`) and the delete/error `red-*` colours in
+> `ApplicationModal.tsx` are a separate semantic colour scale, not brand chrome,
+> and were left as-is. Verified with `npx tsc --noEmit` (clean), `npx next build`
+> (succeeds, all routes present), `npx eslint .` (0 errors), and by grepping the
+> compiled CSS in `.next/`: `.bg-brand-blue`, `.text-brand-navy`,
+> `.text-brand-muted`, `.border-brand-light`, and the opacity/hover/focus variants
+> (`bg-brand-blue/90:hover`, `bg-brand-light/50:hover`, `ring-brand-blue/15:focus`)
+> all emit real rules.
+
 `DashboardShell` uses `brand-*` tokens; `EmptyFolders`, `ApplicationsView`, and `ApplicationModal`
 use raw `blue-600` / `slate-*`. Standardise on the `@theme` tokens introduced in #3.
 
