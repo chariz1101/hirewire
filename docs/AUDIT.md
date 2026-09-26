@@ -304,6 +304,12 @@ prefix each policy with `drop policy if exists`.
 
 ### 12. Missing index on the folder-page query
 
+> **Status: FIXED — requires a manual Supabase migration.** Added
+> `idx_applications_folder_date` on `(folder_id, date_applied desc)` to
+> `hirewire_schema.sql`, using `create index if not exists` so the file
+> stays safe to re-run. **Run the updated `hirewire_schema.sql` in the
+> Supabase SQL Editor.**
+
 **File:** `src/app/dashboard/[folderId]/page.tsx:25`
 
 The query filters on `folder_id` and orders by `date_applied`; no index covers it. The three existing
@@ -316,12 +322,31 @@ create index if not exists idx_applications_folder_date
 
 ### 13. Add explicit user scoping as defense-in-depth
 
+> **Status: FIXED.** Added `.eq("user_id", user.id)` to the folders query in
+> `layout.tsx`, and to both the folder and applications queries in
+> `[folderId]/page.tsx` (which now also fetches the current user). Verified
+> with `npx tsc --noEmit` (clean), `npx next build` (succeeds, both dynamic
+> routes still present), and `npx eslint .` (0 errors).
+
 **Files:** `src/app/dashboard/layout.tsx:22`, `src/app/dashboard/[folderId]/page.tsx:19`
 
 Both rely solely on RLS to scope rows. Adding `.eq("user_id", user.id)` costs nothing and provides
 a second layer if a policy is ever changed incorrectly.
 
 ### 14. Two disconnected colour palettes
+
+> **Status: FIXED.** `EmptyFolders`, `ApplicationsView`, and `ApplicationModal` now
+> use `brand-blue`/`brand-navy`/`brand-light`/`brand-muted` in place of the raw
+> `blue-*`/`slate-*` chrome (accents, headings, body text, borders, hover states),
+> matching `DashboardShell`. The per-status badge colours in `STATUS_STYLE`
+> (`ApplicationsView.tsx`) and the delete/error `red-*` colours in
+> `ApplicationModal.tsx` are a separate semantic colour scale, not brand chrome,
+> and were left as-is. Verified with `npx tsc --noEmit` (clean), `npx next build`
+> (succeeds, all routes present), `npx eslint .` (0 errors), and by grepping the
+> compiled CSS in `.next/`: `.bg-brand-blue`, `.text-brand-navy`,
+> `.text-brand-muted`, `.border-brand-light`, and the opacity/hover/focus variants
+> (`bg-brand-blue/90:hover`, `bg-brand-light/50:hover`, `ring-brand-blue/15:focus`)
+> all emit real rules.
 
 `DashboardShell` uses `brand-*` tokens; `EmptyFolders`, `ApplicationsView`, and `ApplicationModal`
 use raw `blue-600` / `slate-*`. Standardise on the `@theme` tokens introduced in #3.
