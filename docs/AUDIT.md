@@ -364,6 +364,17 @@ use raw `blue-600` / `slate-*`. Standardise on the `@theme` tokens introduced in
 
 ### 16. Untyped status assignment
 
+> **Status: FIXED.** `set()` is now generic (`set<K extends keyof typeof
+> form>(field: K, value: typeof form[K])`), so the status `<select>`'s
+> `onChange` must pass an `AppStatus`, not a bare `string`; it now casts
+> `e.target.value as AppStatus` (safe since the `<option>`s are rendered
+> from `STATUSES: AppStatus[]`). Verified by temporarily reverting the cast:
+> `npx tsc --noEmit` then correctly failed with `Argument of type 'string'
+> is not assignable to parameter of type 'AppStatus'` at that call site,
+> confirming the narrowed signature actually catches the bug. With the fix
+> restored, `npx tsc --noEmit` (clean), `npx eslint .` (0 errors), and
+> `npx next build` (succeeds, all routes present) all pass.
+
 **File:** `src/components/dashboard/ApplicationModal.tsx:181`
 
 `set("status", e.target.value)` passes a `string` into a field typed `AppStatus`. The computed-key

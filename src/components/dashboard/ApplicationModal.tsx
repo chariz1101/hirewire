@@ -50,7 +50,7 @@ export default function ApplicationModal({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  function set(field: string, value: string | number) {
+  function set<K extends keyof typeof form>(field: K, value: typeof form[K]) {
     setForm(f => ({ ...f, [field]: value }));
   }
 
@@ -179,7 +179,7 @@ export default function ApplicationModal({
               <select
                 className={inputCls}
                 value={form.status}
-                onChange={e => set("status", e.target.value)}
+                onChange={e => set("status", e.target.value as AppStatus)}
               >
                 {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
