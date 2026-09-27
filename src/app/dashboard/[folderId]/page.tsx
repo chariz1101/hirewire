@@ -13,11 +13,16 @@ export default async function FolderPage({
   const { folderId } = await params;
   const supabase = await createClient();
 
-  // Verify folder belongs to this user (RLS handles security)
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) notFound();
+
+  // RLS scopes both queries to the caller already; the explicit
+  // user_id filter is defense-in-depth in case a policy ever regresses.
   const { data: folder } = await supabase
     .from("folders")
     .select("id, name")
     .eq("id", folderId)
+    .eq("user_id", user.id)
     .single();
 
   if (!folder) notFound();
@@ -26,6 +31,7 @@ export default async function FolderPage({
     .from("applications")
     .select("*")
     .eq("folder_id", folderId)
+    .eq("user_id", user.id)
     .order("date_applied", { ascending: false });
 
   return (
