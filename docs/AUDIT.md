@@ -353,6 +353,11 @@ use raw `blue-600` / `slate-*`. Standardise on the `@theme` tokens introduced in
 
 ### 15. `/settings` is protected but does not exist
 
+> **Status: FIXED.** Removed `/settings` from `PROTECTED` in `middleware.ts`
+> since no such route exists in `src/app`. Verified with `npx tsc --noEmit`
+> (clean), `npx next build` (succeeds, route list unchanged), and
+> `npx eslint .` (0 errors).
+
 **File:** `middleware.ts:8`
 
 `PROTECTED` lists `/settings`, which has no route. Harmless today; remove it or build the page.
