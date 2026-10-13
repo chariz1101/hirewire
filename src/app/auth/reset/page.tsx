@@ -57,7 +57,7 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-slate-900">Set a new password</h2>
+            <h2 className="font-display font-bold text-lg text-slate-900">Set a new password</h2>
             <p className="text-sm text-slate-500 mt-1">
               {ready
                 ? "Choose a new password for your account."
@@ -113,7 +113,7 @@ export default function ResetPasswordPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 bg-blue-600 text-white rounded-xl font-mono text-sm font-medium tracking-wide hover:bg-blue-700 active:scale-[0.99] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed mt-1"
+                className="w-full py-2.5 bg-blue-600 text-white rounded-xl font-display text-sm font-medium tracking-wide hover:bg-blue-700 active:scale-[0.99] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed mt-1"
               >
                 {loading ? "Please wait…" : "Update password"}
               </button>

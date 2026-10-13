@@ -89,13 +89,13 @@ function AuthPageInner() {
         <div className="absolute bottom-0 right-12 w-24 h-24 bg-blue-600 opacity-40 rotate-45 translate-y-8" />
 
         <div className="relative flex items-center gap-2">
-          <span className="text-blue-600 font-mono text-2xl font-medium leading-none">⌁</span>
-          <span className="text-white font-mono text-sm font-medium tracking-widest uppercase">HireWire</span>
+          <span className="text-blue-600 font-display text-2xl font-medium leading-none">⌁</span>
+          <span className="text-white font-display text-sm font-medium tracking-widest uppercase">HireWire</span>
         </div>
 
         <div className="relative">
           <div className="w-8 h-0.5 bg-blue-600 mb-6" />
-          <h1 className="text-4xl font-semibold text-white leading-tight tracking-tight mb-4">
+          <h1 className="font-display font-bold text-4xl text-white leading-tight tracking-tight mb-4">
             Every application.<br />One command<br />center.
           </h1>
           <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
@@ -117,7 +117,7 @@ function AuthPageInner() {
             </li>
           ))}
           <li className="pt-2">
-            <span className="font-mono text-[10px] tracking-widest uppercase text-blue-400/80">
+            <span className="font-display text-[10px] tracking-widest uppercase text-blue-400/80">
               Free forever for job seekers
             </span>
           </li>
@@ -127,8 +127,8 @@ function AuthPageInner() {
       <div className="flex-1 flex items-center justify-center bg-slate-50 px-6 py-12">
         <div className="w-full max-w-md">
           <div className="flex items-center gap-2 mb-8 lg:hidden">
-            <span className="text-blue-600 font-mono text-xl">⌁</span>
-            <span className="font-mono text-sm font-medium tracking-widest uppercase text-slate-900">HireWire</span>
+            <span className="text-blue-600 font-display text-xl">⌁</span>
+            <span className="font-display text-sm font-medium tracking-widest uppercase text-slate-900">HireWire</span>
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
@@ -152,7 +152,7 @@ function AuthPageInner() {
 
             {isForgot && (
               <div className="mb-6">
-                <h2 className="text-lg font-semibold text-slate-900">Reset password</h2>
+                <h2 className="font-display font-bold text-lg text-slate-900">Reset password</h2>
                 <p className="text-sm text-slate-500 mt-1">We&apos;ll send a reset link to your email.</p>
               </div>
             )}
@@ -169,7 +169,7 @@ function AuthPageInner() {
                 </button>
                 <div className="flex items-center gap-3 my-5">
                   <div className="flex-1 h-px bg-slate-200" />
-                  <span className="text-xs text-slate-400 font-mono">or</span>
+                  <span className="text-xs text-slate-400 font-display">or</span>
                   <div className="flex-1 h-px bg-slate-200" />
                 </div>
               </>
@@ -223,7 +223,7 @@ function AuthPageInner() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 bg-blue-600 text-white rounded-xl font-mono text-sm font-medium tracking-wide hover:bg-blue-700 active:scale-[0.99] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed mt-1"
+                className="w-full py-2.5 bg-blue-600 text-white rounded-xl font-display text-sm font-medium tracking-wide hover:bg-blue-700 active:scale-[0.99] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed mt-1"
               >
                 {loading
                   ? "Please wait…"
