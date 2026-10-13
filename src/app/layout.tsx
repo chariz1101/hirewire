@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
-import { DM_Sans, DM_Mono } from "next/font/google";
+import { Onest, Red_Hat_Mono } from "next/font/google";
 import "./globals.css";
 
-// Optimizing DM Sans based on your previous CSS weights
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+// Onest: clean grotesque, loaded from 400 up so text never renders thin
+const onest = Onest({
+  variable: "--font-onest",
   subsets: ["latin"],
-  weight: ["400", "500", "600"], 
+  weight: ["400", "500", "600", "700"],
 });
 
-// Optimizing DM Mono
-const dmMono = DM_Mono({
-  variable: "--font-dm-mono",
+// Red Hat Mono: sturdy monospace for labels and buttons
+const redHatMono = Red_Hat_Mono({
+  variable: "--font-red-hat-mono",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${dmMono.variable} h-full antialiased`}
+      className={`${onest.variable} ${redHatMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
         {children}

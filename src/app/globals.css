@@ -5,8 +5,8 @@
   --color-brand-navy: #0A0F2C;
   --color-brand-light: #E8EEFF;
   --color-brand-muted: #6B7FCC;
-  --font-sans: var(--font-dm-sans), sans-serif;
-  --font-mono: var(--font-dm-mono), monospace;
+  --font-sans: var(--font-onest), sans-serif;
+  --font-mono: var(--font-red-hat-mono), monospace;
 }
 
 @layer base {
