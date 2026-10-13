@@ -98,7 +98,7 @@ export default function ApplicationModal({
   }
 
   const inputCls = "w-full px-3 py-2.5 rounded-xl border border-brand-light bg-brand-light/40 text-brand-navy text-sm placeholder-brand-muted outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15 transition-all font-sans";
-  const labelCls = "block text-[10px] font-mono tracking-widest uppercase text-brand-muted mb-1.5";
+  const labelCls = "block text-[10px] font-display tracking-widest uppercase text-brand-muted mb-1.5";
 
   return (
     <div
@@ -112,7 +112,7 @@ export default function ApplicationModal({
         <div className="flex items-center justify-between px-7 pt-6 pb-0 sticky top-0 bg-white z-10">
           <div>
             <div className="w-5 h-0.5 bg-brand-blue mb-2" />
-            <h2 className="text-base font-semibold text-brand-navy tracking-tight">
+            <h2 className="font-display font-bold text-base text-brand-navy tracking-tight">
               {isNew ? "Add application" : "Edit application"}
             </h2>
           </div>
@@ -205,7 +205,7 @@ export default function ApplicationModal({
                   key={r.value}
                   type="button"
                   onClick={() => set("reminder_preference", r.value)}
-                  className={`flex-1 py-2 rounded-xl border font-mono text-xs font-medium transition-all ${
+                  className={`flex-1 py-2 rounded-xl border font-display text-xs font-medium transition-all ${
                     form.reminder_preference === r.value
                       ? "border-brand-blue bg-brand-blue text-white"
                       : "border-brand-light bg-brand-light/40 text-brand-muted hover:border-brand-blue/40 hover:text-brand-navy"
@@ -264,7 +264,7 @@ export default function ApplicationModal({
               <button
                 type="submit"
                 disabled={loading}
-                className="px-5 py-2 rounded-xl bg-brand-blue text-white font-mono text-xs font-medium tracking-wide hover:bg-brand-blue/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-5 py-2 rounded-xl bg-brand-blue text-white font-display text-xs font-medium tracking-wide hover:bg-brand-blue/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {loading ? "Saving…" : isNew ? "Add application" : "Save changes"}
               </button>

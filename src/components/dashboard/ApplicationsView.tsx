@@ -56,14 +56,14 @@ export default function ApplicationsView({
       <header className="flex items-center justify-between px-10 py-7 bg-white border-b border-brand-light sticky top-0 z-10">
         <div>
           <div className="w-6 h-0.5 bg-brand-blue mb-2" />
-          <h1 className="text-xl font-semibold text-brand-navy tracking-tight">{folder.name}</h1>
-          <p className="font-mono text-[10px] text-brand-muted tracking-widest uppercase mt-0.5">
+          <h1 className="font-display font-bold text-xl text-brand-navy tracking-tight">{folder.name}</h1>
+          <p className="font-display text-[10px] text-brand-muted tracking-widest uppercase mt-0.5">
             {apps.length} application{apps.length !== 1 ? "s" : ""}
           </p>
         </div>
         <button
           onClick={openNew}
-          className="flex items-center gap-2 px-4 py-2.5 bg-brand-blue text-white rounded-xl font-mono text-xs font-medium tracking-wide hover:bg-brand-blue/90 active:scale-[0.98] transition-all"
+          className="flex items-center gap-2 px-4 py-2.5 bg-brand-blue text-white rounded-xl font-display text-xs font-medium tracking-wide hover:bg-brand-blue/90 active:scale-[0.98] transition-all"
         >
           + Add application
         </button>
@@ -77,7 +77,7 @@ export default function ApplicationsView({
           <p className="text-sm text-brand-muted max-w-xs">Add your first one to start tracking your job hunt.</p>
           <button
             onClick={openNew}
-            className="mt-2 px-5 py-2.5 bg-brand-blue text-white rounded-xl font-mono text-xs font-medium tracking-wide hover:bg-brand-blue/90 transition-colors"
+            className="mt-2 px-5 py-2.5 bg-brand-blue text-white rounded-xl font-display text-xs font-medium tracking-wide hover:bg-brand-blue/90 transition-colors"
           >
             + Add application
           </button>
@@ -90,7 +90,7 @@ export default function ApplicationsView({
                 {["Role", "Company", "Date applied", "Status", "Reminder", ""].map((h, i) => (
                   <th
                     key={i}
-                    className="text-left font-mono text-[9px] tracking-widest uppercase text-brand-muted pb-3 pr-4 font-normal"
+                    className="text-left font-display text-[9px] tracking-widest uppercase text-brand-muted pb-3 pr-4 font-normal"
                   >
                     {h}
                   </th>
@@ -119,21 +119,21 @@ export default function ApplicationsView({
                     </div>
                   </td>
                   <td className="py-3.5 pr-4 text-brand-muted">{app.company_name}</td>
-                  <td className="py-3.5 pr-4 font-mono text-[11px] text-brand-muted whitespace-nowrap">
+                  <td className="py-3.5 pr-4 font-display text-[11px] text-brand-muted whitespace-nowrap">
                     {formatLocalDate(app.date_applied, {
                       month: "short", day: "numeric", year: "numeric",
                     })}
                   </td>
                   <td className="py-3.5 pr-4">
-                    <span className={`inline-block px-2.5 py-0.5 rounded-full font-mono text-[10px] font-medium tracking-wide ${STATUS_STYLE[app.status]}`}>
+                    <span className={`inline-block px-2.5 py-0.5 rounded-full font-display text-[10px] font-medium tracking-wide ${STATUS_STYLE[app.status]}`}>
                       {app.status}
                     </span>
                   </td>
-                  <td className="py-3.5 pr-4 font-mono text-[11px] text-brand-muted">
+                  <td className="py-3.5 pr-4 font-display text-[11px] text-brand-muted">
                     {app.reminder_preference ? `${app.reminder_preference}d` : "—"}
                   </td>
                   <td className="py-3.5 text-right">
-                    <span className="font-mono text-[10px] text-brand-muted opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="font-display text-[10px] text-brand-muted opacity-0 group-hover:opacity-100 transition-opacity">
                       Edit →
                     </span>
                   </td>

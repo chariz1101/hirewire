@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
-import { Onest, Red_Hat_Mono } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 
-// Onest: clean grotesque, loaded from 400 up so text never renders thin
-const onest = Onest({
-  variable: "--font-onest",
+// Inter for body copy, Manrope for headings and labels. Regular weights
+// and up only, so nothing renders thin.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
-// Red Hat Mono: sturdy monospace for labels and buttons
-const redHatMono = Red_Hat_Mono({
-  variable: "--font-red-hat-mono",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${onest.variable} ${redHatMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
         {children}
